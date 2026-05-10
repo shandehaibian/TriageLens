@@ -1,0 +1,118 @@
+============================================
+TRIAGELENS EVALUATION REPORT
+============================================
+
+DATASET
+  Total claims    : 120
+  RECOMMEND_NEW   : 34
+  REUSE_PRIOR     : 22
+  DO_NOT_CHECK    : 64
+  Adversarial     : 15
+
+--------------------------------------------
+MACRO-F1 SUMMARY
+--------------------------------------------
+  Full system     : 0.5928
+  Keyword BL      : 0.3171
+  Zeroshot BL     : 0.5314
+
+--------------------------------------------
+PER-CLASS METRICS
+--------------------------------------------
+  Full system
+                 RECOMMEND_NEW   REUSE_PRIOR     DO_NOT_CHECK 
+  precision             0.4156             0.9          0.9394
+  recall                0.9412          0.4091          0.4844
+  f1                    0.5766          0.5625          0.6392
+  support                   34              22              64
+
+  Keyword BL
+                 RECOMMEND_NEW   REUSE_PRIOR     DO_NOT_CHECK 
+  precision                0.5             0.0          0.5727
+  recall                0.1471             0.0          0.9844
+  f1                    0.2273             0.0          0.7241
+  support                   34              22              64
+
+  Zeroshot BL
+                 RECOMMEND_NEW   REUSE_PRIOR     DO_NOT_CHECK 
+  precision                0.5             0.5          0.8289
+  recall                0.5882          0.0909          0.9844
+  f1                    0.5405          0.1538             0.9
+  support                   34              22              64
+
+--------------------------------------------
+CONFUSION MATRICES
+--------------------------------------------
+  Full system (rows=gold, cols=predicted)
+                         RECOMMEND_NEW   REUSE_PRIOR     DO_NOT_CHECK 
+  RECOMMEND_NEW                     32               0               2
+  REUSE_PRIOR                       13               9               0
+  DO_NOT_CHECK                      32               1              31
+
+  Keyword BL (rows=gold, cols=predicted)
+                         RECOMMEND_NEW   REUSE_PRIOR     DO_NOT_CHECK 
+  RECOMMEND_NEW                      5               0              29
+  REUSE_PRIOR                        4               0              18
+  DO_NOT_CHECK                       1               0              63
+
+  Zeroshot BL (rows=gold, cols=predicted)
+                         RECOMMEND_NEW   REUSE_PRIOR     DO_NOT_CHECK 
+  RECOMMEND_NEW                     20               2              12
+  REUSE_PRIOR                       19               2               1
+  DO_NOT_CHECK                       1               0              63
+
+--------------------------------------------
+ADVERSARIAL SUBSET
+--------------------------------------------
+  Full system macro-F1  : 0.3317
+  Keyword BL macro-F1   : 0.2319
+  Zeroshot BL macro-F1  : 0.3373
+
+  Per-type accuracy:
+  type                                       full        kw        zs
+  ───────────────────────────────────────────────────────────────────
+  fact_opinion_blend                         0.33      1.00      1.00
+  grammatical_ambiguity                      0.33      1.00      0.67
+  negation_of_known_misinfo                  0.00      0.67      1.00
+  softened_misinformation                    1.00      0.00      0.33
+  time_sensitive_claim                       1.00      0.00      0.00
+
+--------------------------------------------
+STATISTICAL TESTS
+--------------------------------------------
+  Full vs Keyword  : chi2=0.1324 p=0.7160
+  Full vs Zeroshot : chi2=2.7170 p=0.0993
+
+  Bootstrap 95% CI (macro-F1 difference, 1000 resamples):
+  Full - Keyword   : [0.1532, 0.3911]
+  Full - Zeroshot  : [-0.0569, 0.1801]
+
+--------------------------------------------
+PERFORMANCE
+--------------------------------------------
+  Latency p50     : 0.172s
+  Latency p95     : 0.381s
+  Cost per 100    : $0.0194
+
+--------------------------------------------
+KNOWN LIMITATIONS
+--------------------------------------------
+  1. RAG recall@3 = 0.55：知识库覆盖不完整，
+     9 条真变体被降级为 related_but_different
+     并保守路由至 RECOMMEND_NEW_CHECK
+
+  2. virality_score 未纳入：外部传播信号
+     缺失，队列优先级排序无实际依据
+
+  3. 已知事实盲区：checkability 高的已确立
+     事实若不在知识库中，可能被误判为
+     RECOMMEND_NEW_CHECK
+
+  4. Zeroshot REUSE_PRIOR_CHECK 幻觉性风险：
+     无知识库支撑的变体判断不可验证
+
+  5. 软化措辞漏检：keyword baseline 对
+     defensive phrasing 系统性失效，
+     主系统部分缓解但未完全解决
+
+============================================

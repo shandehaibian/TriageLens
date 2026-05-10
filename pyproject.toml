@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "triageLens"
+version = "0.1.0"
+description = "Fact-check triage and labeling with LLMs"
+requires-python = ">=3.11"
+dependencies = [
+    "chromadb",
+    "openai",
+    "streamlit",
+    "pydantic",
+    "pandas",
+    "requests",
+    "diskcache",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

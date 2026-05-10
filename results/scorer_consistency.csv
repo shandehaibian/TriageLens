@@ -1,0 +1,12 @@
+id,claim_preview,check_r1,check_r2,check_r3,harm_r1,harm_r2,harm_r3,clarity_r1,clarity_r2,clarity_r3,checkability_std,harm_std,clarity_std,unstable
+c001,A 2024 Stanford-led randomized trial found that 16:8 intermittent fasting reduce,5,5,5,3,3,3,5,5,5,0.0,0.0,0.0,False
+c002,"Taking 5,000 IU of vitamin D3 daily eliminates seasonal affective disorder sympt",4,4,4,4,4,4,5,5,5,0.0,0.0,0.0,False
+c003,"A phase III clinical trial shows that oral berberine at 1,500 mg/day achieves eq",5,5,5,4,4,4,5,5,5,0.0,0.0,0.0,False
+c004,Harvard researchers report that daily consumption of 40 g dark chocolate (≥85% c,5,5,5,3,3,3,5,5,5,0.0,0.0,0.0,False
+c005,A 2023 meta-analysis of 14 RCTs found that magnesium glycinate supplementation a,5,5,5,3,2,2,5,5,5,0.0,0.5774,0.0,False
+c006,Psilocybin-assisted therapy produces remission in 58% of treatment-resistant dep,5,5,5,4,4,4,5,5,5,0.0,0.0,0.0,False
+c007,A single CRISPR injection targeting the BCL11A enhancer achieves functional cure,5,5,5,4,4,4,5,5,5,0.0,0.0,0.0,False
+c008,Oxford University's 10-year PREDIMED follow-up study reports that strict adheren,5,5,5,3,3,3,5,5,5,0.0,0.0,0.0,False
+c009,Consuming two tablespoons of apple cider vinegar immediately before high-carbohy,5,5,5,4,3,3,5,5,5,0.0,0.5774,0.0,False
+c010,Intranasal esketamine (Spravato) achieves antidepressant response in 70% of pati,5,5,5,4,4,4,5,5,5,0.0,0.0,0.0,False
+SUMMARY,mean std across 10 claims,,,,,,,,,,0.0,0.1155,0.0,False

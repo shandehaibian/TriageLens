@@ -1,0 +1,183 @@
+[
+  {
+    "id": "v2_001",
+    "claim_text": "Wearing a COVID-19 protective mask every day for many months raises the risk of developing lung malignancies.",
+    "source_review_url": "https://www.thequint.com/fit/fit-webqoof/fact-check-study-misrepresented-to-claim-face-masks-for-covid-causes-cancer",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_002",
+    "claim_text": "Prolonged daily use of pandemic face coverings can trigger cancerous changes in lung tissue over time.",
+    "source_review_url": "https://www.thequint.com/fit/fit-webqoof/fact-check-study-misrepresented-to-claim-face-masks-for-covid-causes-cancer",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_003",
+    "claim_text": "A government commitment to add one billion pounds to mental health budgets was due to be delivered before 2021.",
+    "source_review_url": "https://fullfact.org/health/unanswered-questions-extra-1-billion-mental-health/",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_004",
+    "claim_text": "New mental health investment totalling a billion pounds was scheduled to reach front-line services no later than 2021.",
+    "source_review_url": "https://fullfact.org/health/unanswered-questions-extra-1-billion-mental-health/",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_005",
+    "claim_text": "A prominent heart surgeon publicly opposed the introduction of a five-percent levy applied to medical treatments and hospital visits.",
+    "source_review_url": "https://www.thequint.com/news/webqoof/old-letter-dr-devi-shetty-5-percent-service-tax-healthcare-viral-as-recent",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_006",
+    "claim_text": "A leading cardiologist authored a formal objection to the proposal to impose a 5% charge on all clinical and hospital services.",
+    "source_review_url": "https://www.thequint.com/news/webqoof/old-letter-dr-devi-shetty-5-percent-service-tax-healthcare-viral-as-recent",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_007",
+    "claim_text": "Preparing a hot infusion of garlic and drinking it is enough to fully eliminate a SARS-CoV-2 infection.",
+    "source_review_url": "https://www.snopes.com/fact-check/garlic-cure-coronavirus/",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_008",
+    "claim_text": "Boiling garlic cloves and consuming the resulting broth provides a complete cure for COVID-19.",
+    "source_review_url": "https://www.snopes.com/fact-check/garlic-cure-coronavirus/",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_009",
+    "claim_text": "An immunologist and vaccine researcher publicly declared that all approved coronavirus immunizations present serious and underreported health hazards.",
+    "source_review_url": "https://factcheck.afp.com/immunologists-misinterpretation-data-fuels-misleading-covid-19-vaccine-claims",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_010",
+    "claim_text": "A university professor specializing in viral immunology argued that receiving a COVID-19 shot carries significant risks that health authorities have failed to disclose.",
+    "source_review_url": "https://factcheck.afp.com/immunologists-misinterpretation-data-fuels-misleading-covid-19-vaccine-claims",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_011",
+    "claim_text": "The chief executive of a major vaccine manufacturer privately acknowledged that his company's messenger RNA injections carried unacceptable risks before stepping down.",
+    "source_review_url": "https://www.indiatoday.in/fact-check/story/fact-check-no-pfizer-ceo-did-not-resign-saying-mrna-vaccines-were-unsafe-2308403-2022-12-12",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_012",
+    "claim_text": "A top pharmaceutical executive admitted that RNA-based COVID vaccines were insufficiently vetted for safety prior to emergency authorization and subsequently resigned.",
+    "source_review_url": "https://www.indiatoday.in/fact-check/story/fact-check-no-pfizer-ceo-did-not-resign-saying-mrna-vaccines-were-unsafe-2308403-2022-12-12",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_013",
+    "claim_text": "Government health databases for former military personnel contain formal reports linking coronavirus shots to a range of serious adverse medical events.",
+    "source_review_url": "https://leadstories.com/hoax-alert/2021/07/fact-check-vaers-numbers-are-not-proof-895-veterans-killed-or-injured-by-covid-vaccine.html",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_014",
+    "claim_text": "Federal medical records from veterans' facilities document hundreds of injury cases directly attributed to COVID-19 vaccination.",
+    "source_review_url": "https://leadstories.com/hoax-alert/2021/07/fact-check-vaers-numbers-are-not-proof-895-veterans-killed-or-injured-by-covid-vaccine.html",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_015",
+    "claim_text": "Israel's government social media profile announced a deal providing six months of complimentary mental health counseling to civilians impacted by the ongoing conflict.",
+    "source_review_url": "https://www.snopes.com/fact-check/israel-free-therapy-betterhelp-war/",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_016",
+    "claim_text": "An official Israeli state account shared a partnership offering half a year of free online therapy sessions to residents affected by the war.",
+    "source_review_url": "https://www.snopes.com/fact-check/israel-free-therapy-betterhelp-war/",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_017",
+    "claim_text": "Extracts derived from grape seeds can eliminate all types of malignant tumors and constitute a definitive cancer cure.",
+    "source_review_url": "https://www.thip.media/health-news-fact-check/fact-check-can-grape-seeds-cure-cancer/29896/",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_018",
+    "claim_text": "Compounds naturally present in grape seeds have been shown to destroy cancer cells and provide a complete treatment for the disease.",
+    "source_review_url": "https://www.thip.media/health-news-fact-check/fact-check-can-grape-seeds-cure-cancer/29896/",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_019",
+    "claim_text": "Daily uptake of mental health services has risen by roughly 1,400 individuals when compared against the 2010-2011 baseline.",
+    "source_review_url": "https://fullfact.org/health/has-number-people-using-mental-services-increased/",
+    "expected_label": "variant_of_existing"
+  },
+  {
+    "id": "v2_020",
+    "claim_text": "Around 1,400 additional people per day are now seeking psychological or psychiatric support compared with the 2010/11 period.",
+    "source_review_url": "https://fullfact.org/health/has-number-people-using-mental-services-increased/",
+    "expected_label": "variant_of_existing"
+  },
+
+  {
+    "id": "v2_021",
+    "claim_text": "GLP-1 receptor agonists like semaglutide cause severe and persistent muscle mass loss that does not recover after discontinuing the drug.",
+    "source_review_url": null,
+    "expected_label": "no_prior"
+  },
+  {
+    "id": "v2_022",
+    "claim_text": "Long COVID brain fog is caused by microclots obstructing capillaries in the prefrontal cortex, cutting off oxygen to neurons.",
+    "source_review_url": null,
+    "expected_label": "no_prior"
+  },
+  {
+    "id": "v2_023",
+    "claim_text": "Microplastics accumulating in human blood are directly driving the recent global rise in unexplained male infertility.",
+    "source_review_url": null,
+    "expected_label": "no_prior"
+  },
+  {
+    "id": "v2_024",
+    "claim_text": "Taurine supplementation can extend human lifespan by up to 20 years, based on findings reported in a 2023 Nature study.",
+    "source_review_url": null,
+    "expected_label": "no_prior"
+  },
+  {
+    "id": "v2_025",
+    "claim_text": "Non-diabetics who wear continuous glucose monitors can use real-time data to prevent future metabolic disease and optimize longevity.",
+    "source_review_url": null,
+    "expected_label": "no_prior"
+  },
+  {
+    "id": "v2_026",
+    "claim_text": "Cold water immersion three times per week significantly raises free testosterone levels and measurably reduces symptoms of depression.",
+    "source_review_url": null,
+    "expected_label": "no_prior"
+  },
+  {
+    "id": "v2_027",
+    "claim_text": "Red light therapy applied to the scalp for ten minutes daily reverses androgenetic alopecia and fully regrows hair within six months.",
+    "source_review_url": null,
+    "expected_label": "no_prior"
+  },
+  {
+    "id": "v2_028",
+    "claim_text": "Persistent fatigue and breathlessness in long COVID patients are caused by mitochondrial dysfunction in skeletal muscle cells.",
+    "source_review_url": null,
+    "expected_label": "no_prior"
+  },
+  {
+    "id": "v2_029",
+    "claim_text": "Taking semaglutide during the first trimester significantly increases the risk of fetal birth defects, according to new pregnancy registry data.",
+    "source_review_url": null,
+    "expected_label": "no_prior"
+  },
+  {
+    "id": "v2_030",
+    "claim_text": "Metformin taken by healthy non-diabetic adults slows biological aging by activating AMPK pathways and reducing cellular senescence markers.",
+    "source_review_url": null,
+    "expected_label": "no_prior"
+  }
+]

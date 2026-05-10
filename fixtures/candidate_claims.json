@@ -1,0 +1,182 @@
+[
+  {
+    "id": "c001",
+    "claim_text": "A 2024 Stanford-led randomized trial found that 16:8 intermittent fasting reduces LDL cholesterol by 23% in adults over 50 after 12 weeks.",
+    "source": "Facebook health group post linking to a preprint server",
+    "expected_label": "RECOMMEND_NEW_CHECK"
+  },
+  {
+    "id": "c002",
+    "claim_text": "Taking 5,000 IU of vitamin D3 daily eliminates seasonal affective disorder symptoms within four weeks, according to a Norwegian cohort study published in 2023.",
+    "source": "Wellness influencer tweet with 48k retweets",
+    "expected_label": "RECOMMEND_NEW_CHECK"
+  },
+  {
+    "id": "c003",
+    "claim_text": "A phase III clinical trial shows that oral berberine at 1,500 mg/day achieves equivalent glycemic control to metformin in newly diagnosed type 2 diabetic patients.",
+    "source": "Natural health newsletter, 200k subscribers",
+    "expected_label": "RECOMMEND_NEW_CHECK"
+  },
+  {
+    "id": "c004",
+    "claim_text": "Harvard researchers report that daily consumption of 40 g dark chocolate (≥85% cocoa) lowers systolic blood pressure by 8 mmHg over 8 weeks in hypertensive individuals.",
+    "source": "Reddit r/nutrition, 3.2k upvotes",
+    "expected_label": "RECOMMEND_NEW_CHECK"
+  },
+  {
+    "id": "c005",
+    "claim_text": "A 2023 meta-analysis of 14 RCTs found that magnesium glycinate supplementation at 400 mg/day reduces validated anxiety scores by 31% compared to placebo.",
+    "source": "YouTube health channel, 1.1M views",
+    "expected_label": "RECOMMEND_NEW_CHECK"
+  },
+  {
+    "id": "c006",
+    "claim_text": "Psilocybin-assisted therapy produces remission in 58% of treatment-resistant depression patients at 6-month follow-up versus 38% for SSRIs, per a Johns Hopkins RCT.",
+    "source": "Tech-news site health section",
+    "expected_label": "RECOMMEND_NEW_CHECK"
+  },
+  {
+    "id": "c007",
+    "claim_text": "A single CRISPR injection targeting the BCL11A enhancer achieves functional cure of sickle cell disease in 94% of trial participants with no serious adverse events at 24 months.",
+    "source": "Science journalist Twitter thread, 90k impressions",
+    "expected_label": "RECOMMEND_NEW_CHECK"
+  },
+  {
+    "id": "c008",
+    "claim_text": "Oxford University's 10-year PREDIMED follow-up study reports that strict adherence to a Mediterranean diet reduces incident Alzheimer's disease by 35%.",
+    "source": "Diet blog citing a secondary news article",
+    "expected_label": "RECOMMEND_NEW_CHECK"
+  },
+  {
+    "id": "c009",
+    "claim_text": "Consuming two tablespoons of apple cider vinegar immediately before high-carbohydrate meals blunts postprandial blood glucose spikes by 20–30% in prediabetic adults.",
+    "source": "TikTok video, 4.7M views",
+    "expected_label": "RECOMMEND_NEW_CHECK"
+  },
+  {
+    "id": "c010",
+    "claim_text": "Intranasal esketamine (Spravato) achieves antidepressant response in 70% of patients within 24 hours of first dose, outperforming all oral antidepressants in speed of action.",
+    "source": "Psychiatry forum post shared widely on LinkedIn",
+    "expected_label": "RECOMMEND_NEW_CHECK"
+  },
+  {
+    "id": "c011",
+    "claim_text": "Drinking celery juice every morning on an empty stomach detoxifies the liver and kidneys and has been shown to reverse autoimmune conditions.",
+    "source": "Instagram wellness account, 2.3M followers",
+    "expected_label": "REUSE_PRIOR_CHECK"
+  },
+  {
+    "id": "c012",
+    "claim_text": "Eating a whole lemon—including the peel—every day destroys cancer cells up to 10,000 times more effectively than chemotherapy drugs like Adriamycin.",
+    "source": "WhatsApp chain message, millions of shares",
+    "expected_label": "REUSE_PRIOR_CHECK"
+  },
+  {
+    "id": "c013",
+    "claim_text": "The mRNA COVID-19 vaccines permanently alter your DNA and insert foreign genetic sequences that are passed on to your children.",
+    "source": "Telegram channel, 500k subscribers",
+    "expected_label": "REUSE_PRIOR_CHECK"
+  },
+  {
+    "id": "c014",
+    "claim_text": "Drinking water ionized to pH 9.5 neutralizes excess body acid, creating an environment in which cancer cannot survive or grow.",
+    "source": "MLM product website shared on Pinterest",
+    "expected_label": "REUSE_PRIOR_CHECK"
+  },
+  {
+    "id": "c015",
+    "claim_text": "Activated charcoal added to smoothies binds and removes heavy metals and pharmaceutical toxins from the bloodstream within hours of consumption.",
+    "source": "Juice bar promotional blog, syndicated widely",
+    "expected_label": "REUSE_PRIOR_CHECK"
+  },
+  {
+    "id": "c016",
+    "claim_text": "High-dose oregano oil capsules function as a broad-spectrum natural antibiotic, eliminating MRSA infections that are resistant to all prescription antibiotics.",
+    "source": "Alternative medicine podcast, 800k downloads",
+    "expected_label": "REUSE_PRIOR_CHECK"
+  },
+  {
+    "id": "c017",
+    "claim_text": "Colloidal silver solution, taken orally at 500 ppm daily, cures bacterial infections without any side effects and never produces antibiotic resistance.",
+    "source": "Naturopathic clinic newsletter",
+    "expected_label": "REUSE_PRIOR_CHECK"
+  },
+  {
+    "id": "c018",
+    "claim_text": "Daily consumption of turmeric supplements at 3 g curcumin can dissolve existing tumors and replace chemotherapy for patients with early-stage solid cancers.",
+    "source": "Facebook group 'Natural Cures', 1.8M members",
+    "expected_label": "REUSE_PRIOR_CHECK"
+  },
+  {
+    "id": "c019",
+    "claim_text": "The MMR vaccine contains mercury-based preservatives that cause autism spectrum disorder in children who carry specific genetic variants, a link covered up by the CDC.",
+    "source": "Anti-vaccine forum post, widely screenshot-shared",
+    "expected_label": "REUSE_PRIOR_CHECK"
+  },
+  {
+    "id": "c020",
+    "claim_text": "5G electromagnetic radiation suppresses immune cell activity in the bone marrow, making people significantly more vulnerable to respiratory viral infections.",
+    "source": "Conspiracy YouTube channel, 2.1M subscribers",
+    "expected_label": "REUSE_PRIOR_CHECK"
+  },
+  {
+    "id": "c021",
+    "claim_text": "Washing hands with soap and water for at least 20 seconds is one of the most effective ways to prevent the spread of many types of infection.",
+    "source": "CDC official website",
+    "expected_label": "DO_NOT_CHECK"
+  },
+  {
+    "id": "c022",
+    "claim_text": "Cigarette smoking is the leading preventable cause of cancer death in the United States, responsible for approximately 30% of all cancer deaths.",
+    "source": "American Cancer Society fact sheet",
+    "expected_label": "DO_NOT_CHECK"
+  },
+  {
+    "id": "c023",
+    "claim_text": "Vaccines are one of the most cost-effective public health tools ever developed and have eradicated or nearly eradicated several previously common diseases.",
+    "source": "WHO official position statement",
+    "expected_label": "DO_NOT_CHECK"
+  },
+  {
+    "id": "c024",
+    "claim_text": "Regular moderate-intensity physical activity—at least 150 minutes per week—reduces the risk of cardiovascular disease, type 2 diabetes, and several cancers.",
+    "source": "WHO Global Action Plan on Physical Activity 2018",
+    "expected_label": "DO_NOT_CHECK"
+  },
+  {
+    "id": "c025",
+    "claim_text": "Type 2 diabetes is strongly associated with overweight, physical inactivity, and poor diet, and can often be prevented through lifestyle modification.",
+    "source": "CDC Diabetes Prevention Program overview",
+    "expected_label": "DO_NOT_CHECK"
+  },
+  {
+    "id": "c026",
+    "claim_text": "I personally feel so much healthier and more energetic ever since I cut out processed food—it has genuinely changed my life.",
+    "source": "Personal blog post",
+    "expected_label": "DO_NOT_CHECK"
+  },
+  {
+    "id": "c027",
+    "claim_text": "Everyone should try to eat more fruits and vegetables and drink enough water throughout the day for better health.",
+    "source": "General wellness social media post",
+    "expected_label": "DO_NOT_CHECK"
+  },
+  {
+    "id": "c028",
+    "claim_text": "Chronic stress over long periods can negatively affect both mental health and physical health in ways that vary widely between individuals.",
+    "source": "Mayo Clinic patient education page",
+    "expected_label": "DO_NOT_CHECK"
+  },
+  {
+    "id": "c029",
+    "claim_text": "Adults generally need between 7 and 9 hours of sleep per night to support optimal cognitive function and immune health.",
+    "source": "National Sleep Foundation guidelines",
+    "expected_label": "DO_NOT_CHECK"
+  },
+  {
+    "id": "c030",
+    "claim_text": "If you are experiencing symptoms that concern you, you should always consult a qualified healthcare professional rather than relying solely on online information.",
+    "source": "NHS website disclaimer",
+    "expected_label": "DO_NOT_CHECK"
+  }
+]

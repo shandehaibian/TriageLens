@@ -1,0 +1,62 @@
+[
+  {
+    "id": "kb001",
+    "original_claim": "Long-term use of face mask for COVID-19 will cause lung cancer",
+    "review_url": "https://www.thequint.com/fit/fit-webqoof/fact-check-study-misrepresented-to-claim-face-masks-for-covid-causes-cancer",
+    "date": "2021-03-02"
+  },
+  {
+    "id": "kb002",
+    "original_claim": "An extra £1 billion will be invested on mental health spending by 2021.",
+    "review_url": "https://fullfact.org/health/unanswered-questions-extra-1-billion-mental-health/",
+    "date": "2016-02-23"
+  },
+  {
+    "id": "kb003",
+    "original_claim": "Dr Devi Shetty has written a letter against the implementation of 5% service tax on healthcare services.",
+    "review_url": "https://www.thequint.com/news/webqoof/old-letter-dr-devi-shetty-5-percent-service-tax-healthcare-viral-as-recent",
+    "date": "2023-02-28"
+  },
+  {
+    "id": "kb004",
+    "original_claim": "Drinking boiled garlic water will cure COVID-19.",
+    "review_url": "https://www.snopes.com/fact-check/garlic-cure-coronavirus/",
+    "date": "2020-03-10"
+  },
+  {
+    "id": "kb005",
+    "original_claim": "Dr Byram Bridle says vaccines against Covid-19 are dangerous",
+    "review_url": "https://factcheck.afp.com/immunologists-misinterpretation-data-fuels-misleading-covid-19-vaccine-claims",
+    "date": "2021-06-23"
+  },
+  {
+    "id": "kb006",
+    "original_claim": "Pfizer CEO Albert Burla admitted that Covid-19 vaccines developed using mRNA technology were not safe and he’s now stepping down from his post.",
+    "review_url": "https://www.indiatoday.in/fact-check/story/fact-check-no-pfizer-ceo-did-not-resign-saying-mrna-vaccines-were-unsafe-2308403-2022-12-12",
+    "date": "2022-12-12"
+  },
+  {
+    "id": "kb007",
+    "original_claim": "VA records document COVID-19 vaccine adverse reaction reports among veterans.",
+    "review_url": "https://leadstories.com/hoax-alert/2021/07/fact-check-vaers-numbers-are-not-proof-895-veterans-killed-or-injured-by-covid-vaccine.html",
+    "date": "2021-07-15"
+  },
+  {
+    "id": "kb008",
+    "original_claim": "The official X account for the state of Israel posted a collaboration with mental health services company BetterHelp, offering “6 months of free therapy to those affected by the war in Israel.”",
+    "review_url": "https://www.snopes.com/fact-check/israel-free-therapy-betterhelp-war/",
+    "date": "2023-10-16"
+  },
+  {
+    "id": "kb009",
+    "original_claim": "Grape seeds cure Cancer",
+    "review_url": "https://www.thip.media/health-news-fact-check/fact-check-can-grape-seeds-cure-cancer/29896/",
+    "date": "2022-02-21"
+  },
+  {
+    "id": "kb010",
+    "original_claim": "1,400 more people are accessing mental health services every day, compared to 2010/11.",
+    "review_url": "https://fullfact.org/health/has-number-people-using-mental-services-increased/",
+    "date": "2017-01-11"
+  }
+]
