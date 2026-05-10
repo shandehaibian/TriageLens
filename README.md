@@ -139,25 +139,49 @@ TriageLens/
 
 ---
 
-## Evaluation Results (120 claims)
+## Evaluation
 
-### Macro-F1
+### What was tested
 
-| System | Macro-F1 |
+120 claims across three categories, run through all three systems and scored against gold labels:
+
+- **50 positives** — real health misinformation claims from Health Feedback / AFP Fact Check 2024 reviews. Gold label: `RECOMMEND_NEW_CHECK`.
+- **55 negatives** — 35 established medical consensus statements (CDC/WHO style) + 20 unfalsifiable personal-opinion statements. Gold label: `DO_NOT_CHECK`.
+- **15 adversarial cases** — hand-crafted claims targeting five known failure modes: softened misinformation, fact-opinion blends, grammatical ambiguity, negations of known misinfo, and time-sensitive emerging claims.
+
+### What counted as good output
+
+A correct prediction matches the gold label. The primary metric is **macro-F1** (unweighted average across all three classes), which penalises ignoring any class. For the adversarial subset, per-type accuracy was used instead, since each type has only three examples.
+
+### Two baselines
+
+| System | What it does |
 |---|---|
-| **Full system** | **0.5928** |
-| Zeroshot baseline | 0.5314 |
-| Keyword baseline | 0.3171 |
+| **Keyword baseline** | Rule-based: matches curated term lists; cannot produce `REUSE_PRIOR_CHECK` |
+| **Zeroshot baseline** | Single GPT-4o-mini call with no retrieval; `REUSE_PRIOR_CHECK` is produced from model memory only |
+| **Full system** | RAG retrieval + GPT-4o-mini scorer + 6-rule assembler |
 
-### Per-class F1
+### What the comparison showed
 
-| | RECOMMEND_NEW | REUSE_PRIOR | DO_NOT_CHECK |
-|---|---|---|---|
-| Full system | 0.5766 | 0.5625 | 0.6392 |
-| Zeroshot BL | 0.5405 | 0.1538 | 0.9000 |
-| Keyword BL | 0.2273 | 0.0000 | 0.7241 |
+| System | Macro-F1 | RECOMMEND_NEW F1 | REUSE_PRIOR F1 | DO_NOT_CHECK F1 |
+|---|---|---|---|---|
+| **Full system** | **0.5928** | 0.5766 | 0.5625 | 0.6392 |
+| Zeroshot baseline | 0.5314 | 0.5405 | 0.1538 | 0.9000 |
+| Keyword baseline | 0.3171 | 0.2273 | 0.0000 | 0.7241 |
 
-### Adversarial subset (per-type accuracy)
+The full system is the only one that meaningfully detects `REUSE_PRIOR_CHECK` (F1 0.56 vs 0.15 / 0.00). Its largest advantage over both baselines is on **softened misinformation** and **time-sensitive claims** — cases where hedging language hides a checkable assertion. The scorer prompt is explicitly designed to look past that hedging; neither baseline has this capability.
+
+Bootstrap 95% CI on macro-F1 difference (1 000 resamples): full vs keyword is [+0.15, +0.39] — the gap is real. Full vs zeroshot is [−0.06, +0.18] — the point estimate favours the full system but the interval straddles zero; the advantage is not conclusive at this sample size.
+
+### Where it broke down
+
+**Established-fact misclassification (32 / 64 DO_NOT_CHECK wrong).** Well-established medical consensus statements — "The MMR vaccine does not cause autism", "Handwashing prevents infection" — score high on `checkability` and `harm` because the scorer reads them as important health claims. Rule 1 (which would short-circuit to `DO_NOT_CHECK`) only fires when the knowledge base contains a review with a positive `rating` field; the current index holds only misinformation reviews, so Rule 1 never triggers.
+
+**REUSE_PRIOR recall is low (9 / 22, recall 0.41).** The similarity threshold was calibrated to be conservative — precision is 0.90, but 9 true variant claims fall below the threshold and get rerouted to `RECOMMEND_NEW_CHECK`. This was a deliberate design choice to avoid falsely reusing a review that does not actually cover the new claim.
+
+**Negations of known misinformation fail completely (accuracy 0.00).** Claims like "mRNA vaccines do not alter human DNA" retrieve high-similarity hits from existing misinformation reviews (same topic, opposite stance). The system has no mechanism to distinguish a scientific rebuttal from a variant of the misinformation itself.
+
+**Adversarial subset — per-type accuracy**
 
 | Type | Full | Keyword | Zeroshot |
 |---|---|---|---|
@@ -166,21 +190,6 @@ TriageLens/
 | negation_of_known_misinfo | 0.00 | 0.67 | **1.00** |
 | grammatical_ambiguity | 0.33 | **1.00** | 0.67 |
 | fact_opinion_blend | 0.33 | **1.00** | **1.00** |
-
-### Statistical tests
-
-- **Full vs Keyword** — Bootstrap 95% CI [0.1532, 0.3911], does not contain zero: full system is significantly better.
-- **Full vs Zeroshot** — Bootstrap 95% CI [−0.0569, 0.1801], straddles zero: advantage is in the right direction but not conclusive at this sample size.
-
----
-
-## Known Limitations
-
-1. **Established-fact blind spot** — 32/64 DO_NOT_CHECK claims misrouted to RECOMMEND_NEW_CHECK because Rule 1 requires a positive `rating` field in the knowledge base, which only contains misinformation reviews.
-2. **Conservative REUSE_PRIOR routing** — HIGH_THRESH=0.70 maximises precision (0.90) at the cost of recall (0.41); 9 true variants are downgraded.
-3. **negation_of_known_misinfo failure** — Scientific rebuttals of known misinformation retrieve high-similarity hits from the wrong reviews and are misclassified.
-4. **No virality signal** — Queue prioritisation has no empirical basis without a real social-signal data source.
-5. **Zeroshot REUSE hallucination** — Zero-shot baseline can assert a prior review exists with no supporting evidence.
 
 ---
 
