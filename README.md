@@ -10,6 +10,12 @@ A health claim triage system for fact-checking organizations. Given a free-text 
 
 ---
 
+## Data Source
+
+The knowledge base is built from the [claimreview-data](https://github.com/MartinoMensio/claimreview-data) dataset by Martino Mensio, which aggregates ClaimReview markup from fact-checking publishers worldwide. The file `data/raw/claimreview_all.jsonl` is not included in this repository (98 MB); download it from the source and place it at that path before running `scripts/build_index.py`.
+
+---
+
 ## Architecture
 
 ```
