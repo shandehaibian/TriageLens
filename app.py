@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 import json
 import sys
 from pathlib import Path
@@ -16,6 +17,10 @@ from assembler import assemble_triage_card          # noqa: E402
 from claim_scorer import score_claim                # noqa: E402
 from logger import load_decisions, log_decision     # noqa: E402
 from rag_matcher import classify_prior_match, retrieve_top3  # noqa: E402
+from ui_styles import (                             # noqa: E402
+    ACTION_CONFIG, SCORE_CONFIG,
+    sim_badge_html, decision_badge_html,
+)
 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(page_title="TriageLens", layout="wide")
@@ -24,12 +29,6 @@ st.title("TriageLens")
 # ── Constants ──────────────────────────────────────────────────────────────────
 OVERRIDE_ACTIONS   = ["RECOMMEND_NEW_CHECK", "REUSE_PRIOR_CHECK", "DO_NOT_CHECK", "INVALID_CLAIM"]
 ACTION_PLACEHOLDER = "-- Select action --"
-
-_ACTION_WIDGET = {
-    "RECOMMEND_NEW_CHECK": st.error,
-    "REUSE_PRIOR_CHECK":   st.warning,
-    "DO_NOT_CHECK":        st.success,
-}
 
 
 def _queue_marker(info: dict) -> str:
@@ -101,36 +100,40 @@ def render_card_body(card: dict, claim_item: dict) -> None:
     st.markdown(f"**{card['claim_text']}**")
     st.caption(f"Source: {claim_item.get('source', 'N/A')}")
 
-    action = card["recommended_action"]
-    _ACTION_WIDGET.get(action, st.info)(f"RECOMMENDED ACTION: {action}")
-    st.write(f"**Rule triggered:** {card['rule_triggered']}")
-    st.write(f"**Reasoning:** {card['action_reasoning']}")
+    cfg = ACTION_CONFIG[card["recommended_action"]]
+    getattr(st, cfg["streamlit_type"])(
+        f"{cfg['icon']} **{cfg['label']}**"
+        f" · `{card['rule_triggered']}`  \n"
+        f"_{card['action_reasoning']}_"
+    )
 
     st.markdown("---")
     st.markdown("**── Dimension Scores ──**")
-    sc = card["scores"]
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.metric("Checkability", f"{sc['checkability']}/5")
-        st.caption(sc["checkability_rationale"])
-    with c2:
-        st.metric("Harm", f"{sc['harm']}/5")
-        st.caption(sc["harm_rationale"])
-    with c3:
-        st.metric("Clarity", f"{sc['clarity']}/5")
-        st.caption(sc["clarity_rationale"])
+    col1, col2, col3 = st.columns(3)
+    for col, (label, key, _color) in zip([col1, col2, col3], SCORE_CONFIG):
+        with col:
+            score = card["scores"][key]
+            st.metric(label, f"{score} / 5")
+            st.progress(score / 5)
+            st.caption(card["scores"][f"{key}_rationale"])
 
     st.markdown("---")
     st.markdown("**── Prior Reviews ──**")
     if card["prior_reviews"]:
-        for hit in card["prior_reviews"]:
-            st.write(
-                f"similarity: {hit['similarity_score']:.2f}  |  "
-                f"{hit['claim_text'][:120]}"
+        for review in card["prior_reviews"]:
+            sim   = review["similarity_score"]
+            badge = sim_badge_html(sim)
+            url   = review["review_url"]
+            text  = html.escape(review["claim_text"])
+            st.markdown(
+                f'{badge} {text}  \n'
+                f'<a href="{url}" target="_blank"'
+                f' style="font-size:11px">{url}</a>',
+                unsafe_allow_html=True,
             )
-            st.markdown(f"[{hit['review_url']}]({hit['review_url']})")
+            st.divider()
     else:
-        st.write("No prior reviews found.")
+        st.caption("No prior reviews found.")
 
 
 # ── Session state init ─────────────────────────────────────────────────────────
@@ -158,14 +161,38 @@ with tab1:
     with col_queue:
         st.subheader("Candidate Queue")
         for claim in claims:
-            cid   = claim["id"]
-            label = f"{claim['claim_text'][:60]}…"
-            if cid in decided_map:
-                label += _queue_marker(decided_map[cid])
-            if st.button(label, key=f"btn_{cid}"):
-                st.session_state["selected_claim_id"] = cid
-                st.session_state["pending_action"]    = None
-                st.session_state["action_message"]    = None
+            cid         = claim["id"]
+            is_decided  = cid in decided_map
+            is_selected = (cid == st.session_state["selected_claim_id"])
+            escaped     = html.escape(claim["claim_text"][:60])
+
+            if is_decided:
+                ea    = decided_map[cid]["editor_action"]
+                oa    = decided_map[cid].get("override_action")
+                badge = decision_badge_html(ea, oa)
+                st.markdown(
+                    f'<div style="opacity:0.4;padding:4px 8px 4px 12px;'
+                    f'border-left:2px solid transparent;font-size:12px;'
+                    f'line-height:1.4">'
+                    f'{escaped}… {badge}'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+            else:
+                if is_selected:
+                    st.markdown(
+                        '<div style="border-left:2px solid #378ADD;'
+                        'padding-left:4px;margin-bottom:-8px"></div>',
+                        unsafe_allow_html=True,
+                    )
+                if st.button(
+                    f"{claim['claim_text'][:60]}…",
+                    key=f"btn_{cid}",
+                    use_container_width=True,
+                ):
+                    st.session_state["selected_claim_id"] = cid
+                    st.session_state["pending_action"]    = None
+                    st.session_state["action_message"]    = None
 
     # ── Right: triage card ─────────────────────────────────────────────────────
     with col_card:
@@ -404,21 +431,33 @@ with st.sidebar:
             st.session_state["sidebar_card"] = run_pipeline_ad_hoc(sidebar_text.strip())
 
     if "sidebar_card" in st.session_state:
-        sc = st.session_state["sidebar_card"]
-        _ACTION_WIDGET.get(sc["recommended_action"], st.info)(
-            f"**{sc['recommended_action']}**"
+        sc  = st.session_state["sidebar_card"]
+        cfg = ACTION_CONFIG[sc["recommended_action"]]
+        getattr(st, cfg["streamlit_type"])(
+            f"{cfg['icon']} **{cfg['label']}**"
+            f" · `{sc['rule_triggered']}`  \n"
+            f"_{sc['action_reasoning']}_"
         )
-        st.write(f"Rule: {sc['rule_triggered']}")
-        scores = sc["scores"]
-        st.write(
-            f"Checkability: **{scores['checkability']}/5** | "
-            f"Harm: **{scores['harm']}/5** | "
-            f"Clarity: **{scores['clarity']}/5**"
-        )
-        st.markdown("**Top-3 prior reviews:**")
+
+        st.markdown("**Scores**")
+        for label, key, _ in SCORE_CONFIG:
+            score = sc["scores"][key]
+            st.caption(label)
+            st.progress(score / 5)
+            st.write(f"{score} / 5 — {sc['scores'][f'{key}_rationale']}")
+
+        st.markdown("**Prior reviews**")
         if sc["prior_reviews"]:
             for hit in sc["prior_reviews"]:
-                st.write(f"• {hit['similarity_score']:.2f} — {hit['claim_text'][:80]}")
-                st.markdown(f"[link]({hit['review_url']})")
+                sim   = hit["similarity_score"]
+                badge = sim_badge_html(sim)
+                text  = html.escape(hit["claim_text"][:80])
+                url   = hit["review_url"]
+                st.markdown(
+                    f'{badge} {text}  \n'
+                    f'<a href="{url}" target="_blank"'
+                    f' style="font-size:11px">{url}</a>',
+                    unsafe_allow_html=True,
+                )
         else:
-            st.write("No prior reviews found.")
+            st.caption("No prior reviews found.")
