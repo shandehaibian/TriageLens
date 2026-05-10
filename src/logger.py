@@ -12,7 +12,11 @@ from pathlib import Path
 ROOT     = Path(__file__).parent.parent
 LOG_PATH = ROOT / "logs" / "decisions.jsonl"
 
-VALID_EDITOR_ACTIONS = {"ACCEPT", "OVERRIDE", "REJECT"}
+VALID_EDITOR_ACTIONS  = {"ACCEPT", "OVERRIDE"}
+VALID_OVERRIDE_ACTIONS = {
+    "RECOMMEND_NEW_CHECK", "REUSE_PRIOR_CHECK",
+    "DO_NOT_CHECK", "INVALID_CLAIM",
+}
 
 
 def log_decision(
@@ -21,6 +25,7 @@ def log_decision(
     editor_action: str,
     override_action: str | None = None,
     override_reason: str | None = None,
+    rejection_cause: str | None = None,
 ) -> None:
     if editor_action not in VALID_EDITOR_ACTIONS:
         raise ValueError(
@@ -29,8 +34,14 @@ def log_decision(
     if editor_action == "OVERRIDE":
         if not override_action:
             raise ValueError("override_action is required when editor_action is 'OVERRIDE'")
+        if override_action not in VALID_OVERRIDE_ACTIONS:
+            raise ValueError(
+                f"override_action must be one of {VALID_OVERRIDE_ACTIONS}, got {override_action!r}"
+            )
         if not override_reason:
             raise ValueError("override_reason is required when editor_action is 'OVERRIDE'")
+        if override_action == "INVALID_CLAIM" and not rejection_cause:
+            raise ValueError("rejection_cause is required when override_action is 'INVALID_CLAIM'")
 
     record = {
         "timestamp":          datetime.now(timezone.utc).isoformat(),
@@ -41,6 +52,7 @@ def log_decision(
         "editor_action":      editor_action,
         "override_action":    override_action,
         "override_reason":    override_reason,
+        "rejection_cause":    rejection_cause if override_action == "INVALID_CLAIM" else None,
         "scores":             triage_card["scores"],
         "prior_match_label":  triage_card["prior_match_label"],
     }
@@ -87,7 +99,7 @@ if __name__ == "__main__":
         "assembled_at": "2026-05-09T00:00:00+00:00",
     }
 
-    # Step 2: write three records
+    # Step 2: write records
     log_decision("smoke_001", card, "ACCEPT")
     print("Logged: ACCEPT")
 
@@ -96,31 +108,44 @@ if __name__ == "__main__":
         override_action="RECOMMEND_NEW_CHECK",
         override_reason="Claim is more specific than system recognized",
     )
-    print("Logged: OVERRIDE")
+    print("Logged: OVERRIDE → RECOMMEND_NEW_CHECK")
 
-    log_decision("smoke_001", card, "REJECT")
-    print("Logged: REJECT")
+    log_decision(
+        "smoke_001", card, "OVERRIDE",
+        override_action="INVALID_CLAIM",
+        override_reason="Claim is not a factual statement",
+        rejection_cause="Text is a personal testimonial, not a verifiable health claim",
+    )
+    print("Logged: OVERRIDE → INVALID_CLAIM")
 
     # Step 3: reload and print summary
     decisions = load_decisions()
     print(f"\nload_decisions() returned {len(decisions)} record(s).")
     first = decisions[0]
     print(f"Most recent — timestamp: {first['timestamp']}  editor_action: {first['editor_action']}")
+    print(f"rejection_cause: {first.get('rejection_cause')}")
 
     # Step 4: error cases
     print()
     try:
-        log_decision("smoke_001", card, "OVERRIDE")   # missing both override fields
+        log_decision("smoke_001", card, "OVERRIDE")
     except ValueError as e:
         print(f"Caught expected error (OVERRIDE no action+reason): {e}")
 
     try:
         log_decision("smoke_001", card, "OVERRIDE",
-                     override_action="RECOMMEND_NEW_CHECK")   # missing override_reason
+                     override_action="RECOMMEND_NEW_CHECK")
     except ValueError as e:
         print(f"Caught expected error (OVERRIDE no reason): {e}")
 
     try:
-        log_decision("smoke_001", card, "SKIP")       # invalid action
+        log_decision("smoke_001", card, "OVERRIDE",
+                     override_action="INVALID_CLAIM",
+                     override_reason="Not a claim")
     except ValueError as e:
-        print(f"Caught expected error (invalid action): {e}")
+        print(f"Caught expected error (INVALID_CLAIM no rejection_cause): {e}")
+
+    try:
+        log_decision("smoke_001", card, "REJECT")
+    except ValueError as e:
+        print(f"Caught expected error (invalid editor_action): {e}")

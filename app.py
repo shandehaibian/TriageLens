@@ -22,15 +22,26 @@ st.set_page_config(page_title="TriageLens", layout="wide")
 st.title("TriageLens")
 
 # ── Constants ──────────────────────────────────────────────────────────────────
-ACTIONS      = ["RECOMMEND_NEW_CHECK", "REUSE_PRIOR_CHECK", "DO_NOT_CHECK"]
+OVERRIDE_ACTIONS   = ["RECOMMEND_NEW_CHECK", "REUSE_PRIOR_CHECK", "DO_NOT_CHECK", "INVALID_CLAIM"]
 ACTION_PLACEHOLDER = "-- Select action --"
 
-_DECISION_MARKER = {"ACCEPT": " ✓", "OVERRIDE": " ↩", "REJECT": " ✗"}
-_ACTION_WIDGET   = {
+_ACTION_WIDGET = {
     "RECOMMEND_NEW_CHECK": st.error,
     "REUSE_PRIOR_CHECK":   st.warning,
     "DO_NOT_CHECK":        st.success,
 }
+
+
+def _queue_marker(info: dict) -> str:
+    ea = info["editor_action"]
+    oa = info.get("override_action")
+    if ea == "ACCEPT":
+        return " ✓"
+    if ea == "OVERRIDE" and oa == "INVALID_CLAIM":
+        return " ✗"
+    if ea == "OVERRIDE":
+        return " ↩"
+    return ""
 
 # ── Data loaders ───────────────────────────────────────────────────────────────
 
@@ -40,12 +51,15 @@ def load_claims() -> list[dict]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def get_decided_map() -> dict[str, str]:
-    """Return {claim_id: latest editor_action} (decisions.jsonl is newest-first)."""
-    decided: dict[str, str] = {}
+def get_decided_map() -> dict[str, dict]:
+    """Return {claim_id: {editor_action, override_action}} (newest-first)."""
+    decided: dict[str, dict] = {}
     for d in load_decisions():
         if d["claim_id"] not in decided:
-            decided[d["claim_id"]] = d["editor_action"]
+            decided[d["claim_id"]] = {
+                "editor_action":  d["editor_action"],
+                "override_action": d.get("override_action"),
+            }
     return decided
 
 
@@ -147,7 +161,7 @@ with tab1:
             cid   = claim["id"]
             label = f"{claim['claim_text'][:60]}…"
             if cid in decided_map:
-                label += _DECISION_MARKER.get(decided_map[cid], "")
+                label += _queue_marker(decided_map[cid])
             if st.button(label, key=f"btn_{cid}"):
                 st.session_state["selected_claim_id"] = cid
                 st.session_state["pending_action"]    = None
@@ -179,9 +193,9 @@ with tab1:
                 buttons_disabled = already_decided is not None
 
                 if buttons_disabled:
-                    st.info(f"Already decided: **{already_decided}**")
+                    st.info(f"Already decided: **{already_decided['editor_action']}**")
 
-                b1, b2, b3 = st.columns(3)
+                b1, b2 = st.columns(2)
 
                 with b1:
                     if st.button("Accept", key="btn_accept",
@@ -196,31 +210,42 @@ with tab1:
                                  disabled=buttons_disabled):
                         st.session_state["pending_action"] = "OVERRIDE"
 
-                with b3:
-                    if st.button("Reject", key="btn_reject",
-                                 disabled=buttons_disabled):
-                        log_decision(selected_id, card, "REJECT")
-                        st.session_state["action_message"] = "Decision logged: REJECT"
-                        st.session_state["pending_action"] = None
-                        st.rerun()
-
                 # ── Override form ──────────────────────────────────────────
                 if st.session_state["pending_action"] == "OVERRIDE":
                     st.markdown("---")
                     override_action = st.selectbox(
                         "Your decision:",
-                        [ACTION_PLACEHOLDER] + ACTIONS,
+                        [ACTION_PLACEHOLDER] + OVERRIDE_ACTIONS,
                         key="override_action_select",
                     )
                     override_reason = st.text_area(
                         "Reason for override:",
-                        placeholder="Explain why you disagree with the recommendation…",
+                        placeholder=(
+                            "Explain why you disagree "
+                            "with the recommendation..."
+                        ),
                         key="override_reason_text",
                     )
+
+                    rejection_cause: str | None = None
+                    if override_action == "INVALID_CLAIM":
+                        rejection_cause = st.text_area(
+                            "Rejection cause:",
+                            placeholder=(
+                                "Specify why this claim is "
+                                "invalid: duplicate, off-topic, "
+                                "malformed, non-health claim..."
+                            ),
+                            key="rejection_cause_text",
+                        )
 
                     confirm_disabled = (
                         override_action == ACTION_PLACEHOLDER
                         or not override_reason.strip()
+                        or (
+                            override_action == "INVALID_CLAIM"
+                            and not (rejection_cause or "").strip()
+                        )
                     )
 
                     cf1, cf2 = st.columns(2)
@@ -231,6 +256,10 @@ with tab1:
                                 selected_id, card, "OVERRIDE",
                                 override_action = override_action,
                                 override_reason = override_reason.strip(),
+                                rejection_cause = (
+                                    rejection_cause.strip()
+                                    if rejection_cause else None
+                                ),
                             )
                             st.session_state["action_message"] = (
                                 f"Decision logged: OVERRIDE → {override_action}"
@@ -253,11 +282,11 @@ with tab2:
         st.info("No decisions logged yet.")
     else:
         # ── Filters ───────────────────────────────────────────────────────────
-        fc1, fc2 = st.columns(2)
+        fc1, fc2, fc3 = st.columns(3)
         with fc1:
             editor_filter = st.selectbox(
                 "Editor action",
-                ["ALL", "ACCEPT", "OVERRIDE", "REJECT"],
+                ["ALL", "ACCEPT", "OVERRIDE"],
                 key="filter_editor",
             )
         with fc2:
@@ -266,11 +295,21 @@ with tab2:
                 ["ALL", "RECOMMEND_NEW_CHECK", "REUSE_PRIOR_CHECK", "DO_NOT_CHECK"],
                 key="filter_action",
             )
+        with fc3:
+            show_override_filter = editor_filter in ("ALL", "OVERRIDE")
+            override_filter = st.selectbox(
+                "Override action",
+                ["ALL", "RECOMMEND_NEW_CHECK", "REUSE_PRIOR_CHECK",
+                 "DO_NOT_CHECK", "INVALID_CLAIM"],
+                key="filter_override",
+                disabled=not show_override_filter,
+            ) if show_override_filter else "ALL"
 
         filtered = [
             d for d in all_decisions
             if (editor_filter == "ALL" or d["editor_action"]      == editor_filter)
-            and (action_filter == "ALL" or d["recommended_action"] == action_filter)
+            and (action_filter  == "ALL" or d["recommended_action"] == action_filter)
+            and (override_filter == "ALL" or d.get("override_action") == override_filter)
         ]
 
         # ── Table ─────────────────────────────────────────────────────────────
@@ -283,6 +322,7 @@ with tab2:
                 "editor_action":      d["editor_action"],
                 "override_action":    d.get("override_action"),
                 "override_reason":    d.get("override_reason"),
+                "rejection_cause":    d.get("rejection_cause"),
             }
             for d in filtered
         ])
@@ -292,35 +332,65 @@ with tab2:
         total      = len(all_decisions)
         n_accept   = sum(1 for d in all_decisions if d["editor_action"] == "ACCEPT")
         n_override = sum(1 for d in all_decisions if d["editor_action"] == "OVERRIDE")
-        n_reject   = sum(1 for d in all_decisions if d["editor_action"] == "REJECT")
         st.caption(
             f"Total: {total} | Filtered: {len(filtered)} | "
             f"ACCEPT {n_accept/total:.0%} | "
-            f"OVERRIDE {n_override/total:.0%} | "
-            f"REJECT {n_reject/total:.0%}"
+            f"OVERRIDE {n_override/total:.0%}"
         )
 
-        # ── Override analysis matrix ───────────────────────────────────────
+        # ── Override analysis ──────────────────────────────────────────────
         overrides = [d for d in all_decisions if d["editor_action"] == "OVERRIDE"]
         if overrides:
             st.markdown("---")
-            st.markdown("**Override Analysis — recommended vs. editor decision**")
-            matrix_df = (
-                pd.DataFrame([
-                    {
-                        "recommended": d["recommended_action"],
-                        "override_to": d.get("override_action", "unknown"),
-                    }
-                    for d in overrides
-                ])
-                .pivot_table(
-                    index="recommended",
-                    columns="override_to",
-                    aggfunc="size",
-                    fill_value=0,
+
+            # Part 1 — substantive disagreements (non-INVALID_CLAIM)
+            substantive = [
+                d for d in overrides
+                if d.get("override_action") != "INVALID_CLAIM"
+            ]
+            st.markdown("**Override Analysis Part 1 — Substantive disagreements**")
+            st.caption("recommended_action × override_action (excludes INVALID_CLAIM)")
+            if substantive:
+                matrix_df = (
+                    pd.DataFrame([
+                        {
+                            "recommended": d["recommended_action"],
+                            "override_to": d.get("override_action", "unknown"),
+                        }
+                        for d in substantive
+                    ])
+                    .pivot_table(
+                        index="recommended",
+                        columns="override_to",
+                        aggfunc="size",
+                        fill_value=0,
+                    )
                 )
-            )
-            st.dataframe(matrix_df, use_container_width=True)
+                st.dataframe(matrix_df, use_container_width=True)
+            else:
+                st.info("No substantive overrides yet.")
+
+            # Part 2 — invalid claims
+            st.markdown("---")
+            st.markdown("**Override Analysis Part 2 — Invalid claims**")
+            invalids = [
+                d for d in overrides
+                if d.get("override_action") == "INVALID_CLAIM"
+            ]
+            st.caption(f"Total flagged as INVALID_CLAIM: {len(invalids)}")
+            if invalids:
+                invalid_df = pd.DataFrame([
+                    {
+                        "timestamp":      d["timestamp"][:16],
+                        "claim":          d["claim_text"][:60],
+                        "override_reason": d.get("override_reason"),
+                        "rejection_cause": d.get("rejection_cause"),
+                    }
+                    for d in invalids
+                ])
+                st.dataframe(invalid_df, use_container_width=True)
+            else:
+                st.info("No claims flagged as invalid yet.")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SIDEBAR — Live Pipeline Input
