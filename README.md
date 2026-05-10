@@ -74,10 +74,21 @@ pip install -e ".[dev]"
 
 ### 2. Set API key
 
+This project calls the OpenAI API for embedding (index build) and claim scoring (runtime). An API key is required.
+
+Copy the example file and add your key:
+
 ```bash
 cp .env.example .env
-# edit .env and fill in your OpenAI API key
 ```
+
+Then open `.env` and set:
+
+```
+OPENAI_API_KEY=sk-...your-key-here...
+```
+
+The key is read at startup via `python-dotenv`; no code changes are needed. The `.env` file is listed in `.gitignore` and will never be committed.
 
 ### 3. Prepare data and build the vector index
 
