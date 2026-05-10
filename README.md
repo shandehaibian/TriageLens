@@ -12,7 +12,34 @@ A health claim triage system for fact-checking organizations. Given a free-text 
 
 ## Data Source
 
-The knowledge base is built from the [claimreview-data](https://github.com/MartinoMensio/claimreview-data) dataset by Martino Mensio, which aggregates ClaimReview markup from fact-checking publishers worldwide. The file `data/raw/claimreview_all.jsonl` is not included in this repository (98 MB); download it from the source and place it at that path before running `scripts/build_index.py`.
+The knowledge base is built from the [claimreview-data](https://github.com/MartinoMensio/claimreview-data) dataset by Martino Mensio, which aggregates ClaimReview markup from fact-checking publishers worldwide.
+
+Neither the raw source file nor the processed JSONL is included in this repository. Follow these steps to prepare the data locally:
+
+**Step 1 — Download the source file**
+
+From the [claimreview-data releases page](https://github.com/MartinoMensio/claimreview-data), download `claim_reviews.json` and place it in the project root:
+
+```
+TriageLens/
+└── claim_reviews.json   ← place here (~336 MB)
+```
+
+**Step 2 — Convert to JSONL**
+
+```bash
+python scripts/download_data.py
+```
+
+This reads `claim_reviews.json` from the project root and writes the normalised output to `data/raw/claimreview_all.jsonl` (~98 MB). The script skips the conversion if the output file already exists.
+
+**Step 3 — Build the vector index**
+
+```bash
+python scripts/build_index.py
+```
+
+This embeds health-related English ClaimReview records into a local ChromaDB collection at `data/chroma/`. Requires a valid `OPENAI_API_KEY` in `.env`.
 
 ---
 
@@ -52,13 +79,10 @@ cp .env.example .env
 # edit .env and fill in your OpenAI API key
 ```
 
-### 3. Build the vector index
+### 3. Prepare data and build the vector index
 
-Download the ClaimReview source data and place it at `data/raw/claimreview_all.jsonl`, then:
-
-```bash
-python scripts/build_index.py
-```
+See the [Data Source](#data-source) section above for the full three-step process:
+download `claim_reviews.json` → run `scripts/download_data.py` → run `scripts/build_index.py`.
 
 ### 4. Launch the editor UI
 
@@ -82,6 +106,7 @@ TriageLens/
 │       ├── keyword_baseline.py     # Rule-based keyword triage
 │       └── zeroshot_baseline.py    # Single GPT-4o-mini call, no retrieval
 ├── scripts/
+│   ├── download_data.py            # Convert claim_reviews.json → claimreview_all.jsonl
 │   ├── build_index.py              # Embed ClaimReview records into ChromaDB
 │   ├── build_test_set.py           # Build 3-category evaluation test set
 │   ├── build_adversarials.py       # Generate 15 adversarial test claims
