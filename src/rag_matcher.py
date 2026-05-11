@@ -45,11 +45,14 @@ def _get_oai() -> OpenAI:
     return _oai
 
 
-def _get_collection() -> chromadb.Collection:
+def _get_collection() -> chromadb.Collection | None:
     global _collection
     if _collection is None:
-        client = chromadb.PersistentClient(path=str(CHROMA_PATH))
-        _collection = client.get_collection(name=COLLECTION_NAME)
+        try:
+            client = chromadb.PersistentClient(path=str(CHROMA_PATH))
+            _collection = client.get_collection(name=COLLECTION_NAME)
+        except Exception:
+            return None  # index not built yet — caller returns []
     return _collection
 
 
@@ -63,9 +66,11 @@ def retrieve_top3(claim_text: str) -> list[dict]:
     similarity_score is a cosine similarity in [0, 1] converted from the
     cosine *distance* stored by ChromaDB (score = 1 - distance).
     """
-    oai = _get_oai()
     collection = _get_collection()
+    if collection is None:
+        return []  # ChromaDB index not built; pipeline continues with no prior match
 
+    oai = _get_oai()
     embedding = oai.embeddings.create(model=EMBED_MODEL, input=[claim_text]).data[0].embedding
 
     results = collection.query(
